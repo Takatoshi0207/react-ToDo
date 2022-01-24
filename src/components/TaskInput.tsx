@@ -1,12 +1,32 @@
 import React,{ useState } from 'react'
 import { Task } from '../Types'
 
+type Props = {
+  tasks: Task[]
+  setTasks: React.Dispatch<React.SetStateAction<Task[]>>
+}
 
-const TaskInput: React.FC = () => {
+const TaskInput: React.FC<Props> = ({ tasks, setTasks }) => {
   const [inputTitle,setInputTitle ] = useState('')
+
+  // IDを管理するためのステート
+  const [ count, setCount ] = useState(tasks.length + 1)
 
   const handleInputChange =(e: React.ChangeEvent<HTMLInputElement>) => {
     setInputTitle(e.target.value)
+  }
+
+  const handleSubmit = () =>{
+    setCount( count + 1 )
+
+    // 新しく追加するタスク
+    const newTask: Task ={
+      id: count,
+      title: inputTitle,
+      done: false
+    }
+    setTasks([newTask, ...tasks]) //作成したタスクを追加
+    setInputTitle('') //入力しているタイトルをクリアにする
   }
 
   return (
@@ -18,7 +38,7 @@ const TaskInput: React.FC = () => {
           value={inputTitle}
           onChange={handleInputChange}
           />
-          <button className='btn is-primary'>追加</button>
+          <button onClick={handleSubmit} className='btn is-primary'>追加</button>
       </div>
     </div>
   )
